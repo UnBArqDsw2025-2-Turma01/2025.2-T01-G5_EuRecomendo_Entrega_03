@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'reviews',
     'recommender',
     'celery_app',
+    'library',
 ]
 
 MIDDLEWARE = [
