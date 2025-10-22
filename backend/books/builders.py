@@ -4,8 +4,9 @@ Padrão Builder para construção de objetos Book.
 O padrão Builder separa a construção de um objeto complexo de sua representação,
 permitindo que o mesmo processo de construção crie diferentes representações.
 """
-from typing import Optional, List
+from typing import Optional, List, Dict
 from .models import Book
+from .adapters import BookAPIInterface
 
 
 class BookBuilder:
@@ -402,6 +403,122 @@ class BookDirector:
         if genre:
             self.builder.set_genre(genre)
         self.builder.set_source('manual')
+        return self.builder.build()
+
+    def construct_from_adapter(self, normalized_data: Dict, api_name: str) -> Book:
+        """
+        Constrói um Book a partir de dados já normalizados por um Adapter.
+
+        Este método trabalha com a saída padronizada dos Adapters (BookAPIInterface),
+        tornando a construção independente da API específica usada.
+
+        Args:
+            normalized_data: Dados normalizados pelo adapter com estrutura:
+                {
+                    'title': str,
+                    'authors': List[str],
+                    'isbn': Optional[str],
+                    'publisher': Optional[str],
+                    'published_date': Optional[str],
+                    'description': Optional[str],
+                    'cover_url': Optional[str],
+                    'page_count': Optional[int],
+                    'categories': List[str],
+                    'language': Optional[str],
+                    'average_rating': Optional[float]
+                }
+            api_name: Nome da API origem ('google_books', 'open_library', etc.)
+
+        Returns:
+            Book: Objeto Book criado e salvo
+
+        Raises:
+            ValueError: Se dados essenciais (título) estiverem faltando
+
+        Example:
+            >>> from books.adapters import GoogleBooksAdapter
+            >>> adapter = GoogleBooksAdapter()
+            >>> normalized = adapter.search_by_isbn('9780132350884')
+            >>> director = BookDirector()
+            >>> book = director.construct_from_adapter(normalized, 'google_books')
+        """
+        # Reseta o builder
+        self.builder.reset()
+
+        # Título (obrigatório)
+        title = normalized_data.get('title', '')
+        if not title:
+            raise ValueError("Dados normalizados sem título")
+        self.builder.set_title(title)
+
+        # Autores (obrigatório, pode ser lista)
+        authors = normalized_data.get('authors', [])
+        if authors:
+            # Junta múltiplos autores com vírgula
+            author_str = ', '.join(authors) if isinstance(authors, list) else str(authors)
+            self.builder.set_author(author_str)
+        else:
+            # Fallback se não houver autor
+            self.builder.set_author('Autor Desconhecido')
+
+        # ISBN
+        isbn = normalized_data.get('isbn')
+        if isbn:
+            self.builder.set_isbn(isbn)
+
+        # Editora
+        publisher = normalized_data.get('publisher')
+        if publisher:
+            self.builder.set_publisher(publisher)
+
+        # Ano de publicação (extrair de published_date)
+        published_date = normalized_data.get('published_date')
+        if published_date:
+            try:
+                # Extrai os primeiros 4 caracteres (ano)
+                year = int(str(published_date)[:4])
+                self.builder.set_publication_year(year)
+            except (ValueError, IndexError):
+                pass  # Ignora se não conseguir extrair o ano
+
+        # Descrição
+        description = normalized_data.get('description')
+        if description:
+            self.builder.set_description(description)
+
+        # Imagem da capa
+        cover_url = normalized_data.get('cover_url')
+        if cover_url:
+            self.builder.set_cover_url(cover_url)
+
+        # Número de páginas
+        page_count = normalized_data.get('page_count')
+        if page_count and isinstance(page_count, int):
+            self.builder.set_page_count(page_count)
+
+        # Idioma
+        language = normalized_data.get('language')
+        if language:
+            self.builder.set_language(language)
+
+        # Categorias (pegar primeira como gênero principal)
+        categories = normalized_data.get('categories', [])
+        if categories:
+            self.builder.set_genre(categories[0])
+            for category in categories:
+                self.builder.add_category(category)
+
+        # Avaliação média
+        average_rating = normalized_data.get('average_rating')
+        if average_rating:
+            try:
+                self.builder.set_average_rating(float(average_rating))
+            except (ValueError, TypeError):
+                pass  # Ignora se não conseguir converter
+
+        # Marca a origem
+        self.builder.set_source(api_name)
+
         return self.builder.build()
 
     def construct_from_google_books(self, api_data: dict) -> Book:
