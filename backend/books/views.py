@@ -5,6 +5,7 @@ from .models import Book
 from .serializers import BookSerializer, BookCreateSerializer, BookSimpleSerializer
 from .builders import BookBuilder, BookDirector
 from .external_apis import GoogleBooksAPI, OpenLibraryAPI
+from .adapters import GoogleBooksAdapter, OpenLibraryAdapter
 import logging
 
 logger = logging.getLogger(__name__)
@@ -144,7 +145,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
     def _create_from_google_books_id(self, volume_id: str) -> Book:
         """
-        Cria livro importando do Google Books por ID.
+        Cria livro importando do Google Books por ID usando Adapter.
 
         Args:
             volume_id: ID do volume no Google Books
@@ -155,32 +156,54 @@ class BookViewSet(viewsets.ModelViewSet):
         Raises:
             ValueError: Se livro não for encontrado
         """
-        api_data = GoogleBooksAPI.fetch_by_id(volume_id)
-        if not api_data:
+        # Usa o Adapter para buscar e normalizar dados
+        adapter = GoogleBooksAdapter()
+        normalized_data = adapter.fetch_by_id(volume_id)
+
+        if not normalized_data:
             raise ValueError(f"Livro não encontrado no Google Books: {volume_id}")
 
+        # Usa o Director com dados normalizados
         director = BookDirector()
-        return director.construct_from_google_books(api_data)
+        return director.construct_from_adapter(normalized_data, adapter.get_api_name())
 
-    def _create_from_isbn(self, isbn: str) -> Book:
+    def _create_from_isbn(self, isbn: str, api_source: str = 'google_books') -> Book:
         """
-        Cria livro buscando por ISBN no Google Books.
+        Cria livro buscando por ISBN usando Adapter.
+
+        Suporta múltiplas APIs através do padrão Adapter, permitindo fallback.
 
         Args:
             isbn: ISBN-10 ou ISBN-13
+            api_source: API a usar ('google_books' ou 'open_library')
 
         Returns:
             Book: Livro criado
 
         Raises:
-            ValueError: Se livro não for encontrado
+            ValueError: Se livro não for encontrado em nenhuma API
         """
-        api_data = GoogleBooksAPI.search_by_isbn(isbn)
-        if not api_data:
+        # Tenta primeiro com a API especificada
+        if api_source == 'google_books':
+            adapter = GoogleBooksAdapter()
+        elif api_source == 'open_library':
+            adapter = OpenLibraryAdapter()
+        else:
+            raise ValueError(f"API source inválida: {api_source}")
+
+        normalized_data = adapter.search_by_isbn(isbn)
+
+        # Se não encontrou, tenta fallback para outra API
+        if not normalized_data and api_source == 'google_books':
+            logger.info(f"ISBN {isbn} não encontrado no Google Books, tentando Open Library...")
+            adapter = OpenLibraryAdapter()
+            normalized_data = adapter.search_by_isbn(isbn)
+
+        if not normalized_data:
             raise ValueError(f"Livro não encontrado com ISBN: {isbn}")
 
         director = BookDirector()
-        return director.construct_from_google_books(api_data)
+        return director.construct_from_adapter(normalized_data, adapter.get_api_name())
 
     @action(detail=False, methods=['post'], url_path='import-google-books')
     def import_from_google_books(self, request):
@@ -215,7 +238,7 @@ class BookViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='search-google-books')
     def search_google_books(self, request):
         """
-        Busca livros no Google Books sem criar no banco.
+        Busca livros no Google Books sem criar no banco (usando Adapter).
 
         GET /api/books/search-google-books/?q=clean+code
         """
@@ -227,10 +250,85 @@ class BookViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            results = GoogleBooksAPI.search(query, max_results=10)
-            return Response(results, status=status.HTTP_200_OK)
+            adapter = GoogleBooksAdapter()
+            results = adapter.search_by_query(query, limit=10)
+            return Response({
+                'count': len(results),
+                'results': results,
+                'api_source': 'google_books'
+            }, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"Erro ao buscar no Google Books: {e}", exc_info=True)
+            return Response(
+                {'error': 'Erro ao buscar livros'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=False, methods=['post'], url_path='import-open-library')
+    def import_from_open_library(self, request):
+        """
+        Endpoint para importar livro do Open Library por ISBN.
+
+        POST /api/books/import-open-library/
+        {
+            "isbn": "0451524934"
+        }
+        """
+        isbn = request.data.get('isbn')
+        if not isbn:
+            return Response(
+                {'error': 'isbn é obrigatório'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            adapter = OpenLibraryAdapter()
+            normalized_data = adapter.search_by_isbn(isbn)
+
+            if not normalized_data:
+                return Response(
+                    {'error': f'Livro não encontrado no Open Library com ISBN: {isbn}'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            director = BookDirector()
+            book = director.construct_from_adapter(normalized_data, adapter.get_api_name())
+
+            serializer = BookSerializer(book)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Erro ao importar do Open Library: {e}", exc_info=True)
+            return Response(
+                {'error': 'Erro ao importar livro'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    @action(detail=False, methods=['get'], url_path='search-open-library')
+    def search_open_library(self, request):
+        """
+        Busca livros no Open Library sem criar no banco (usando Adapter).
+
+        GET /api/books/search-open-library/?q=1984+orwell
+        """
+        query = request.query_params.get('q')
+        if not query:
+            return Response(
+                {'error': 'Parâmetro q (query) é obrigatório'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            adapter = OpenLibraryAdapter()
+            results = adapter.search_by_query(query, limit=10)
+            return Response({
+                'count': len(results),
+                'results': results,
+                'api_source': 'open_library'
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"Erro ao buscar no Open Library: {e}", exc_info=True)
             return Response(
                 {'error': 'Erro ao buscar livros'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
