@@ -1,0 +1,173 @@
+@startuml Diagrama Adapter - APIs de Livros
+
+title Padrão Adapter - APIs Externas de Livros (EuRecomendo)
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor<<target>> LightBlue
+    BackgroundColor<<adapter>> LightGreen
+    BackgroundColor<<adaptee>> LightYellow
+    BackgroundColor<<client>> LightCoral
+}
+
+' Cliente
+package "Cliente" {
+    class BookViewSet <<client>> {
+        +create(request)
+        +import_from_google_books(request)
+        +import_from_open_library(request)
+        +search_google_books(request)
+        +search_open_library(request)
+        -_create_from_isbn(isbn, api_source)
+        -_create_from_google_books_id(volume_id)
+    }
+
+    class BookDirector <<client>> {
+        -builder: BookBuilder
+        +construct_from_adapter(normalized_data, api_name): Book
+        +construct_from_google_books(api_data): Book
+        +construct_from_open_library(api_data): Book
+        +construct_simple_book(title, author, genre): Book
+    }
+}
+
+' Target (Interface comum)
+interface BookAPIInterface <<target>> {
+    {abstract} +search_by_isbn(isbn: str): Optional[Dict]
+    {abstract} +search_by_query(query: str, limit: int): List[Dict]
+    {abstract} +fetch_by_id(resource_id: str): Optional[Dict]
+    {abstract} +normalize_to_standard_format(api_data: dict): Dict
+    {abstract} +get_api_name(): str
+}
+
+note right of BookAPIInterface
+  **Formato Padronizado:**
+  {
+    'title': str,
+    'authors': List[str],
+    'isbn': Optional[str],
+    'publisher': Optional[str],
+    'published_date': Optional[str],
+    'description': Optional[str],
+    'cover_url': Optional[str],
+    'page_count': Optional[int],
+    'categories': List[str],
+    'language': Optional[str],
+    'average_rating': Optional[float]
+  }
+end note
+
+' Adapters
+class GoogleBooksAdapter <<adapter>> {
+    -api: GoogleBooksAPI
+    -api_key: Optional[str]
+    +__init__(api_key: Optional[str])
+    +search_by_isbn(isbn: str): Optional[Dict]
+    +search_by_query(query: str, limit: int): List[Dict]
+    +fetch_by_id(resource_id: str): Optional[Dict]
+    +normalize_to_standard_format(api_data: dict): Dict
+    +get_api_name(): str
+}
+
+class OpenLibraryAdapter <<adapter>> {
+    -api: OpenLibraryAPI
+    +__init__()
+    +search_by_isbn(isbn: str): Optional[Dict]
+    +search_by_query(query: str, limit: int): List[Dict]
+    +fetch_by_id(resource_id: str): Optional[Dict]
+    +normalize_to_standard_format(api_data: dict): Dict
+    +get_api_name(): str
+}
+
+' Adaptees (APIs externas)
+class GoogleBooksAPI <<adaptee>> {
+    +{static} BASE_URL: str
+    +{static} fetch_by_id(volume_id, api_key): Optional[Dict]
+    +{static} search(query, max_results, api_key): Optional[Dict]
+    +{static} search_by_isbn(isbn, api_key): Optional[Dict]
+}
+
+note right of GoogleBooksAPI
+  **Estrutura Google Books:**
+  {
+    "volumeInfo": {
+      "title": "...",
+      "authors": [...],
+      "industryIdentifiers": [...],
+      "publishedDate": "YYYY-MM-DD",
+      "imageLinks": {...},
+      ...
+    }
+  }
+end note
+
+class OpenLibraryAPI <<adaptee>> {
+    +{static} SEARCH_URL: str
+    +{static} ISBN_URL: str
+    +{static} search(query, limit): Optional[Dict]
+    +{static} fetch_by_isbn(isbn): Optional[Dict]
+}
+
+note right of OpenLibraryAPI
+  **Estrutura Open Library:**
+  {
+    "title": "...",
+    "author_name": [...],
+    "isbn": [...],
+    "first_publish_year": YYYY,
+    "cover_i": 123,
+    ...
+  }
+end note
+
+' Factory
+class AdapterFactory {
+    +{static} create_adapter(api_name, **kwargs): BookAPIInterface
+}
+
+note right of AdapterFactory
+  **Uso:**
+  adapter = create_adapter('google_books')
+  adapter = create_adapter('open_library')
+end note
+
+' Relacionamentos
+BookViewSet ..> BookAPIInterface : usa
+BookDirector ..> BookAPIInterface : usa
+
+GoogleBooksAdapter ..|> BookAPIInterface : implementa
+OpenLibraryAdapter ..|> BookAPIInterface : implementa
+
+GoogleBooksAdapter --> GoogleBooksAPI : adapta
+OpenLibraryAdapter --> OpenLibraryAPI : adapta
+
+AdapterFactory ..> BookAPIInterface : cria
+AdapterFactory ..> GoogleBooksAdapter : instancia
+AdapterFactory ..> OpenLibraryAdapter : instancia
+
+' Notas adicionais
+note bottom of GoogleBooksAdapter
+  **Responsabilidades:**
+  - Chamar GoogleBooksAPI
+  - Converter resposta para formato padrão
+  - Preferir ISBN-13 sobre ISBN-10
+  - Selecionar melhor qualidade de imagem
+end note
+
+note bottom of OpenLibraryAdapter
+  **Responsabilidades:**
+  - Chamar OpenLibraryAPI
+  - Converter resposta para formato padrão
+  - Construir URL de capa
+  - Mapear códigos de idioma (eng→en)
+end note
+
+legend right
+  |= Cor |= Tipo |
+  | <back:LightCoral>   </back> | Cliente |
+  | <back:LightBlue>    </back> | Target (Interface) |
+  | <back:LightGreen>   </back> | Adapter |
+  | <back:LightYellow>  </back> | Adaptee (API Externa) |
+endlegend
+
+@enduml

@@ -11,6 +11,7 @@
       - [3.1.2 Builder — BookBuilder e BookDirector](/Projeto/UC-Builder.md)
     - [3.2. Padrões de Projeto GoFs Estruturais](/docs/PadroesDeProjeto/3.2.GoFsEstruturais.md)
       - [3.2.1 Facade — UC13 (Serviço de Aplicação)](/Projeto/UC13-Facade.md)
+      - [3.2.2 Adapter — APIs Externas de Livros](/Projeto/UC-Adapter.md)
     - [3.3. Padrões de Projeto GoFs Comportamentais](/docs/PadroesDeProjeto/3.3.GoFsComportamentais.md)
       - [3.3.1 Observer — UC13 (Django Signals)](/Projeto/UC13-Observer.md)
     - [3.4. Participações - Padrões de Projeto](/docs/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
