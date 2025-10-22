@@ -21,7 +21,7 @@
           }
         },
         {
-          "name": "Create Book",
+          "name": "Create Book (Manual - Simple)",
           "request": {
             "method": "POST",
             "header": [
@@ -36,6 +36,90 @@
               "raw": "{{base_url}}/api/books/",
               "host": ["{{base_url}}"],
               "path": ["api", "books", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Book (Manual - Complete)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"The Pragmatic Programmer\",\n  \"author\": \"Andrew Hunt, David Thomas\",\n  \"genre\": \"Técnico\",\n  \"isbn\": \"9780135957059\",\n  \"publisher\": \"Addison-Wesley\",\n  \"publication_year\": 2019,\n  \"description\": \"Your journey to mastery\",\n  \"page_count\": 352,\n  \"language\": \"en\",\n  \"categories\": [\"Programming\", \"Software Engineering\"],\n  \"average_rating\": 4.5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Book (Import from Google Books ID)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"google_books_id\": \"hjEFCAAAQBAJ\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Book (Import by ISBN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"import_isbn\": \"9780132350884\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/books/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", ""]
+            }
+          }
+        },
+        {
+          "name": "Search Google Books (without creating)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books/search-google-books/?q=clean+code",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "search-google-books", ""],
+              "query": [
+                {"key": "q", "value": "clean+code"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/books/1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "books", "1", ""]
             }
           }
         }
@@ -171,7 +255,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8000"
+      "value": "http://localhost:8001"
     }
   ]
 }

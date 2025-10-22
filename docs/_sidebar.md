@@ -8,6 +8,7 @@
   - [3. Desenho de Software (Padrões de Projeto)](/docs/PadroesDeProjeto/3.PadroesDeProjeto.md)
     - [3.1. Padrões de Projeto GoFs Criacionais](/docs/PadroesDeProjeto/3.1.GoFsCriacionais.md)
       - [3.1.1 Factory Method — UC13 (Django Manager)](/Projeto/UC13-FactoryMethod.md)
+      - [3.1.2 Builder — BookBuilder e BookDirector](/Projeto/UC-Builder.md)
     - [3.2. Padrões de Projeto GoFs Estruturais](/docs/PadroesDeProjeto/3.2.GoFsEstruturais.md)
       - [3.2.1 Facade — UC13 (Serviço de Aplicação)](/Projeto/UC13-Facade.md)
     - [3.3. Padrões de Projeto GoFs Comportamentais](/docs/PadroesDeProjeto/3.3.GoFsComportamentais.md)
