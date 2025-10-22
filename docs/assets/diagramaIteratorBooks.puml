@@ -1,0 +1,196 @@
+@startuml diagramaIteratorBooks
+
+' Configurações de estilo
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+' Interface Iterator
+interface BookIterator <<interface>> {
+    + __iter__()
+    + __next__(): Dict
+    + has_next(): bool
+    + reset(): void
+    + current_position(): int
+}
+
+' Concrete Iterators
+class UnifiedAPIIterator {
+    - _results: List[Dict]
+    - _api_name: str
+    - _position: int
+    - _total: int
+    + __init__(results, api_name)
+    + __iter__()
+    + __next__(): Dict
+    + has_next(): bool
+    + reset(): void
+    + current_position(): int
+    + total_count(): int
+    + peek(): Optional[Dict]
+    + skip(count: int): void
+}
+
+class LazyAPIIterator {
+    - _adapter: BookAPIInterface
+    - _query: str
+    - _page_size: int
+    - _max_pages: int
+    - _current_page: int
+    - _position_in_page: int
+    - _current_results: List
+    - _exhausted: bool
+    + __init__(adapter, query, page_size, max_pages)
+    + __iter__()
+    + __next__(): Dict
+    + has_next(): bool
+    + reset(): void
+    + current_position(): int
+    - _load_next_page(): void
+}
+
+class MultiSourceIterator {
+    - _adapters: List[BookAPIInterface]
+    - _query: str
+    - _limit_per_api: int
+    - _deduplicate: bool
+    - _all_results: List[Dict]
+    - _position: int
+    - _seen_isbns: Set[str]
+    + __init__(adapters, query, limit_per_api, deduplicate)
+    + __iter__()
+    + __next__(): Dict
+    + has_next(): bool
+    + reset(): void
+    + current_position(): int
+    + total_count(): int
+    + group_by_source(): Dict
+    - _load_all_results(): void
+}
+
+' Aggregate
+class BookAPICollection {
+    - _apis: List[BookAPIInterface]
+    + add_api(adapter): self
+    + create_iterator(query, api_index, limit): UnifiedAPIIterator
+    + create_lazy_iterator(query, api_index, page_size, max_pages): LazyAPIIterator
+    + create_multi_source_iterator(query, limit_per_api, deduplicate): MultiSourceIterator
+    + get_apis(): List[BookAPIInterface]
+}
+
+' Integration Helper
+class IteratorBookBuilder {
+    - _iterator: BookIterator
+    - _director: BookDirector
+    + __init__(iterator)
+    + build_all(skip_existing): List[Book]
+    + build_next(): Optional[Book]
+    + build_batch(count, skip_existing): List[Book]
+}
+
+' Adapter Interface (from previous pattern)
+interface BookAPIInterface <<interface>> {
+    + search_by_isbn(isbn): Optional[Dict]
+    + search_by_query(query, limit): List[Dict]
+    + fetch_by_id(resource_id): Optional[Dict]
+    + normalize_to_standard_format(api_data): Dict
+    + get_api_name(): str
+}
+
+' Concrete Adapters
+class GoogleBooksAdapter {
+    - api: GoogleBooksAPI
+    - api_key: Optional[str]
+    + search_by_isbn(isbn): Optional[Dict]
+    + search_by_query(query, limit): List[Dict]
+    + fetch_by_id(resource_id): Optional[Dict]
+}
+
+class OpenLibraryAdapter {
+    - api: OpenLibraryAPI
+    + search_by_isbn(isbn): Optional[Dict]
+    + search_by_query(query, limit): List[Dict]
+    + fetch_by_id(resource_id): Optional[Dict]
+}
+
+' Builder (from previous pattern)
+class BookDirector {
+    - builder: BookBuilder
+    + construct_from_adapter(normalized_data, api_name): Book
+    + construct_simple_book(title, author, genre): Book
+}
+
+class Book <<entity>> {
+    + title: str
+    + author: str
+    + isbn: str
+    + publisher: str
+    + publication_year: int
+    + description: str
+    + cover_url: str
+    + page_count: int
+    + language: str
+    + categories: JSONField
+    + average_rating: Decimal
+    + source: str
+}
+
+' Relationships - Iterator Pattern
+BookIterator <|.. UnifiedAPIIterator : implements
+BookIterator <|.. LazyAPIIterator : implements
+BookIterator <|.. MultiSourceIterator : implements
+
+BookAPICollection ..> UnifiedAPIIterator : creates
+BookAPICollection ..> LazyAPIIterator : creates
+BookAPICollection ..> MultiSourceIterator : creates
+BookAPICollection o-- BookAPIInterface : manages
+
+IteratorBookBuilder o-- BookIterator : uses
+IteratorBookBuilder o-- BookDirector : uses
+
+' Relationships - Integration with Adapter
+LazyAPIIterator ..> BookAPIInterface : uses
+MultiSourceIterator ..> BookAPIInterface : uses
+
+BookAPIInterface <|.. GoogleBooksAdapter : implements
+BookAPIInterface <|.. OpenLibraryAdapter : implements
+
+' Relationships - Integration with Builder
+BookDirector ..> Book : creates
+IteratorBookBuilder ..> Book : creates
+
+' Notes
+note right of BookIterator
+  Iterator Interface (GoF)
+  Define contrato comum
+  para navegação em coleções
+end note
+
+note right of BookAPICollection
+  Aggregate (GoF)
+  Factory para criar
+  diferentes tipos de iteradores
+end note
+
+note bottom of IteratorBookBuilder
+  Integration Helper
+  Combina 3 padrões GoF:
+  Iterator + Adapter + Builder
+end note
+
+note left of LazyAPIIterator
+  Lazy Loading
+  Carrega páginas
+  sob demanda
+end note
+
+note left of MultiSourceIterator
+  Aggregation
+  Combina múltiplas APIs
+  com deduplicação
+end note
+
+@enduml

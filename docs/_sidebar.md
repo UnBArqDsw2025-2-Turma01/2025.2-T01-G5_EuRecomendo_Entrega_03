@@ -14,6 +14,7 @@
       - [3.2.2 Adapter — APIs Externas de Livros](/Projeto/UC-Adapter.md)
     - [3.3. Padrões de Projeto GoFs Comportamentais](/docs/PadroesDeProjeto/3.3.GoFsComportamentais.md)
       - [3.3.1 Observer — UC13 (Django Signals)](/Projeto/UC13-Observer.md)
+      - [3.3.2 Iterator — Navegação em Resultados de APIs](/Projeto/UC-Iterator.md)
     - [3.4. Participações - Padrões de Projeto](/docs/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
     - [3.5. Iniciativas Extras - Padrões de Projeto](/docs/PadroesDeProjeto/3.5.IniciativasExtras.md)
       
