@@ -16,7 +16,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       DATABASE_URL: postgres://eurecomendo:password@db:5432/eurecomendo
     depends_on:
