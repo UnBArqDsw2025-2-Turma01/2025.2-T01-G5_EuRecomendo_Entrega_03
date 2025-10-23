@@ -1,0 +1,39 @@
+button {
+    margin: 10px;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.like-button {
+    background-color: #e6f2ff;
+    border-color: #007bff;
+    color: #007bff;
+}
+.share-button {
+    background-color: #e6ffef;
+    border-color: #28a745;
+    color: #28a745;
+}
+
+.action-btn.liked,
+.action-btn.liked svg {
+    color: #ef4444; /* Vermelho Tailwind (red-500) */
+    fill: #ef4444;
+}
+
+.action-btn.saved,
+.action-btn.saved svg {
+    color: #10b981; /* Verde Tailwind (emerald-500) */
+    fill: #10b981;
+}
+
+/* Transições suaves */
+.action-btn, .action-btn svg {
+    transition: all 0.2s ease;
+}
+.action-btn:hover {
+    transform: scale(1.1);
+    background-color: #f3f4f6; /* gray-100 */
+}
