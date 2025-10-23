@@ -1,31 +1,116 @@
-# RepositorioTemplate
+# Implementações
 
-Repositório que deve ser utilizado como template inicial pelos grupos da matéria de Arquitetura e Desenho de Software.
+## 1 - ButtonHandler
 
-## Introdução
+A primeira implementação feita foi do Factory Method no front-end da aplicação, com o ButtonHandler para delegar a subclasses a lógica de "curtir", "compartilhar" ou "salvar na biblioteca". 
 
-Este repositório traz um template de repo de documentação a ser seguido pelos grupos de arquitetura e desenho de software.
+<font size="2"><p style="text-align: center"><b>Figura 1:</b> Diagrama ButtonHandler</div>
 
-## Tecnologia
+<div style="text-align: center;">
 
-A geração do site estático é realizada utilizando o [docsify](https://docsify.js.org/).
+![Diagrama](/docs/assets/buttonHandlerDiagrama.png)
 
-```shell
-"Docsify generates your documentation website on the fly. Unlike GitBook, it does not generate static html files. Instead, it smartly loads and parses your Markdown files and displays them as a website. To start using it, all you need to do is create an index.html and deploy it on GitHub Pages."
+</div>
+
+<font size="2"><p style="text-align: center"><b>Autores:</b> Renan Vieira e Sophia Silva, 2025</p></font>
+
+
+### Código
+
+Foram implementados os códigos no padrão factory. Seguem abaixo:
+
+```javascript
+
+class ButtonHandlerBase {
+  constructor(element) {
+    this.element = element; 
+    this.data = element.dataset; 
+  }
+
+  attachEvents() {
+    this.element.addEventListener('click', () => {
+      this.onClick();
+    });
+  }
+  onClick() {
+    console.warn(`Ação não definida para o botão: ${this.data.action}`);
+  }
+}
+
+class LikeButtonHandler extends ButtonHandlerBase {
+  onClick() {
+    this.element.classList.toggle('liked');
+    const svg = this.element.querySelector('svg');
+    svg.style.fill = 'none';
+    const isLiked = this.element.classList.contains('liked');
+    if (isLiked) {
+      alert(`Você CURTIU o livro ID: ${this.data.bookId}`);
+    } else {
+      alert(`Você DESCURTIU o livro ID: ${this.data.bookId}`);
+    }
+  }
+}
+
+class ShareButtonHandler extends ButtonHandlerBase {
+  onClick() {
+    const title = this.data.bookTitle;
+    const author = this.data.bookAuthor;
+    const url = window.location.href;
+    const shareText = `Confira este livro incrível: "${title}" de ${author}. Veja mais em: ${url}`;
+    if (navigator.share) {
+      navigator.share({
+        title: `Biblioteca: ${title}`,
+        text: shareText,
+        url: url,
+      }).catch(err => console.error("Erro ao compartilhar:", err));
+    } else {
+      prompt('Copie o link para compartilhar:', shareText);
+    }
+  }
+}
+
+class SaveButtonHandler extends ButtonHandlerBase {
+    onClick() {
+      this.element.classList.toggle('saved');
+      const svg = this.element.querySelector('svg');
+      svg.style.fill = 'none';
+      const isSaved = this.element.classList.contains('saved');
+      if (isSaved) {
+        alert(`Você SALVOU o livro ID: ${this.data.bookId}`);
+      } else {
+        alert(`Você REMOVEU o livro ID: ${this.data.bookId}`);
+      }
+    }
+}
+
+function buttonFactory(element) {
+  const action = element.dataset.action;
+
+  switch (action) {
+    case 'like':
+      return new LikeButtonHandler(element);
+    case 'share':
+      return new ShareButtonHandler(element);
+    case 'save':
+      return new SaveButtonHandler(element);
+    default:
+      return new ButtonHandlerBase(element);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const allButtons = document.querySelectorAll('.action-btn');
+  allButtons.forEach(buttonElement => {
+    const handler = buttonFactory(buttonElement);
+    handler.attachEvents();
+  });
+});
 ```
 
-### Instalando o docsify
+<font size="2"><p style="text-align: center"><b>Autor/es:</b> Sophia Silva e Renan Vieira, 2025</p></font>
 
-Execute o comando:
+### Histórico de Versões
 
-```shell
-npm i docsify-cli -g
-```
-
-### Executando localmente
-
-Para iniciar o site localmente, utilize o comando:
-
-```shell
-docsify serve ./docs
-```
+| Versão | Data       | Descrição                                                                    | Autor(es)                                                                                        | Revisor(es)                                   | Detalhes da Revisão |
+| ------ | ---------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------- | ------------------- |
+| 0.1    | 22/10/2025 | Criação inicial e adição do que foi implementado                     | [Renan Vieira](https://github.com/R-enanVieira) | [Sophia Silva](https://github.com/sophiassilva) |                     |
