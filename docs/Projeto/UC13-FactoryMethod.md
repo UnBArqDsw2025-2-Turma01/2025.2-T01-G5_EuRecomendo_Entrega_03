@@ -128,8 +128,9 @@ Observações:
 
 
 ## Vídeo (demonstração)
-- Espaço reservado para link de vídeo (YouTube) demonstrando o fluxo UC13.
+- [Vídeo da execução](https://drive.google.com/file/d/1T93AZjNB4CKZI8qosw8IPjmXtamsgJMT/view?usp=sharing)
 
+Participante: [Euller Júlio](https://github.com/Potatoyz908)
 ## Bibliografia
 - Gamma, E. et al. Design Patterns: Elements of Reusable Object-Oriented Software. Addison-Wesley, 1995.
 - Django — Managers e get_or_create: https://docs.djangoproject.com/en/stable/topics/db/managers/
@@ -138,3 +139,4 @@ Observações:
 | Versão | Data       | Descrição                                   | Autor(es)          | Revisor(es) |
 |--------|------------|---------------------------------------------|--------------------|-------------|
 | 1.0    | 19/10/2025 | Criação do documento, adição dos códigos e diagrama base  | [Euller Júlio](https://www.github.com/Potatoyz908) | [Gabriel Castelo](https://github.com/GabrielCastelo-31)           |
+| 1.1    | 22/10/2025 | Adicionado o vídeo da demonstração do código | [Euller Júlio](https://www.github.com/Potatoyz908) | [Gabriel Castelo](https://github.com/GabrielCastelo-31)           |
