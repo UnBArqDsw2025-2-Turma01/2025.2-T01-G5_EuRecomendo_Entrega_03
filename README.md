@@ -1,5 +1,6 @@
 # Implementações
 
+
 ## 1 - ButtonHandler
 
 A primeira implementação feita foi do Factory Method no front-end da aplicação, com o ButtonHandler para delegar a subclasses a lógica de "curtir", "compartilhar" ou "salvar na biblioteca". 
@@ -108,6 +109,45 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 
 <font size="2"><p style="text-align: center"><b>Autor/es:</b> Sophia Silva e Renan Vieira, 2025</p></font>
+
+
+### Passo a Passo para Rodar os Códigos
+
+Antes de tudo, certifique-se e ter o python3 e django admin instalado no seu computador.
+
+1. Acesse a branch [Factory - ButtonHandler - Sophia e Renan](https://github.com/UnBArqDsw2025-2-Turma01/2025.2-T01-G5_EuRecomendo_Entrega_03/tree/feat-criacional-factory-sophia-renan) e faça download ou digite no terminal
+```
+git checkout feat-criacional-factory-sophia-renan
+```
+2. No terminal, digite o seguinte comando para acessar a pasta 
+``` 
+cd gof-factory/factory 
+```
+3. Rode as migrações com 
+```python
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+4. Crie seu super usuário
+```python
+python3 manage.py createsuperuser
+```
+5. Execute o projeto com
+```python
+python3 manage.py runserver
+```
+6. Acesse o localhost no seu navegador, adicione o /admin/ no final da url e faça login com seu usuário. Adicione 3 livros novos.
+7. Apague a url do admin, acesse /biblioteca/home/ e interaja com os botões de curtir, compartilhar e salvar!
+
+### Vídeo da execução
+
+<font size="2"><p style="text-align: center">Vídeo 1 - Factory Method.</p></font>
+
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yFtV18MTrfU?si=x5kWtZztstdT5e83" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</center>
+
+<font size="2"><p style="text-align: center">Autora: [Sophia Silva](https://github.com/sophiassilva), 2025.</p></font>
 
 ### Histórico de Versões
 
