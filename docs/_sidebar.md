@@ -14,7 +14,7 @@
     - [3.3. Padrões de Projeto GoFs Comportamentais](/PadroesDeProjeto/3.3.GoFsComportamentais.md)
       - [3.3.1. Observer](/PadroesDeProjeto/3.3.1.Observer.md)
       - [3.3.2. Strategy](/PadroesDeProjeto/3.3.2.Strategy.md)
-      - [3.3.3. Template Method](/PadroesDeProjeto/3.3.3.Template.md)
+      - [3.3.3. Template Method](/PadroesDeProjeto/3.3.3.TemplateMethod.md)
     - [3.4. Participações - Padrões de Projeto](/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
     - [3.5. Iniciativas Extras - Padrões de Projeto](/PadroesDeProjeto/3.5.IniciativasExtras.md)
       
