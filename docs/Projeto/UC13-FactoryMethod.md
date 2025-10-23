@@ -25,7 +25,7 @@ O Factory Method (Método de Fábrica) é um padrão criacional que fornece uma 
 - Modelo `LibraryEntry` com `UniqueConstraint(user, book)`.
 - Manager `LibraryEntryManager.add_for(user, book, status)` encapsula criação idempotente e atualização de status.
 
-## Diagrama 
+## Diagrama
 ![Diagrama](../assets/diagramaFactoryUC13.png)
 
 ## Código (trechos relevantes)
@@ -48,6 +48,7 @@ class LibraryEntry(models.Model):
         ("LIDO", "Lido"),
         ("ABANDONADO", "Abandonado"),
     )
+    id_library_entry = models.AutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey('books.Book', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="QUERO_LER")

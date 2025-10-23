@@ -20,10 +20,12 @@ class LibraryEntry(models.Model):
         ("LIDO", "Lido"),
         ("ABANDONADO", "Abandonado"),
     )
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    id_library_entry = models.AutoField(primary_key=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     book = models.ForeignKey('books.Book', on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="QUERO_LER")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="QUERO_LER")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -31,7 +33,8 @@ class LibraryEntry(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "book"], name="unique_user_book")
+            models.UniqueConstraint(
+                fields=["user", "book"], name="unique_user_book")
         ]
         ordering = ["-created_at"]
 
