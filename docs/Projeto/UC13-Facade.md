@@ -91,7 +91,9 @@ curl -X POST {{base_url}}/api/library/ \
 No Postman: execute na ordem — `Auth → Obtain Token`, `Books → Create Book`, `Library → Add Book to Library (UC13)` (a coleção salva tokens automaticamente).
 
 ## Vídeo
-- Espaço reservado para link de vídeo demonstrando o fluxo com Facade.
+- [Vídeo da execução](https://drive.google.com/file/d/1RxakFTaSErGhQch93RJRdHlRYdZU24PE/view?usp=sharing)
+
+Participante: [Euller Júlio](https://github.com/Potatoyz908)
 
 ## Bibliografia
 - Refactoring Guru — Facade: https://refactoring.guru/design-patterns/facade
@@ -101,3 +103,5 @@ No Postman: execute na ordem — `Auth → Obtain Token`, `Books → Create Book
 | Versão | Data       | Descrição                                   | Autor(es)          | Revisor(es) |
 |--------|------------|---------------------------------------------|--------------------|-------------|
 | 1.0    | 19/10/2025 | Criação do documento, adição dos códigos e diagrama base  | [Euller Júlio](https://www.github.com/Potatoyz908) | [Gabriel Castelo](https://github.com/GabrielCastelo-31)           |
+| 1.1    | 22/10/2025 | Adicionado o vídeo da demonstração do código | [Euller Júlio](https://www.github.com/Potatoyz908) | [Gabriel Castelo](https://github.com/GabrielCastelo-31)           |
+
