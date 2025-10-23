@@ -8,6 +8,7 @@
   - [3. Desenho de Software (Padrões de Projeto)](/PadroesDeProjeto/3.PadroesDeProjeto.md)
     - [3.1. Padrões de Projeto GoFs Criacionais](/PadroesDeProjeto/3.1.GoFsCriacionais.md)
       - [3.1.1. Factory Method](/PadroesDeProjeto/3.1.1.FactoryMethod.md)
+      - [3.1.1.1 UC13 - Adicionar livro (Factory, Facade, Observer)](/Projeto/UC13-FactoryMethod.md)
       - [3.1.2. Builder](/PadroesDeProjeto/3.1.2.Builder.md)
     - [3.2. Padrões de Projeto GoFs Estruturais](/PadroesDeProjeto/3.2.GoFsEstruturais.md)
       - [3.2.1. Decorator](/PadroesDeProjeto/3.2.1.Decorator.md)
