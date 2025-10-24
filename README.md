@@ -18,7 +18,7 @@ A implementação feita foi do Decorator no back-end da aplicação.
 
 ### Código
 
-Foram implementados os códigos no padrão factory. Seguem abaixo:
+Foram implementados os códigos no padrão Decorator. Seguem abaixo:
 
 ```python
 
@@ -38,7 +38,7 @@ git checkout feat-estrutural-decorator-sophia-renan
 ```
 2. No terminal, digite o seguinte comando para acessar a pasta 
 ``` 
-cd gof-factory/factory 
+cd gof-decorator-template/decorator 
 ```
 3. Rode as migrações com 
 ```python
