@@ -1,0 +1,102 @@
+@startuml diagramaBuilderBooks
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam defaultFontSize 11
+
+class BookBuilder {
+  - _book_data: dict
+  __
+  + __init__()
+  + reset(): BookBuilder
+  + set_title(title: str): BookBuilder
+  + set_author(author: str): BookBuilder
+  + set_genre(genre: str): BookBuilder
+  + set_isbn(isbn: str): BookBuilder
+  + set_publisher(publisher: str): BookBuilder
+  + set_publication_year(year: int): BookBuilder
+  + set_description(description: str): BookBuilder
+  + set_cover_url(url: str): BookBuilder
+  + set_page_count(count: int): BookBuilder
+  + set_language(language: str): BookBuilder
+  + add_category(category: str): BookBuilder
+  + set_categories(categories: list): BookBuilder
+  + set_average_rating(rating: float): BookBuilder
+  + set_source(source: str): BookBuilder
+  + get_data(): dict
+  + build(): Book
+}
+
+class BookDirector {
+  - builder: BookBuilder
+  __
+  + __init__()
+  + construct_simple_book(title, author, genre): Book
+  + construct_from_google_books(api_data): Book
+  + construct_from_open_library(api_data): Book
+}
+
+class Book <<Django Model>> {
+  + title: CharField
+  + author: CharField
+  + genre: CharField
+  + isbn: CharField
+  + publisher: CharField
+  + publication_year: IntegerField
+  + description: TextField
+  + cover_url: URLField
+  + page_count: IntegerField
+  + language: CharField
+  + categories: JSONField
+  + average_rating: DecimalField
+  + source: CharField
+  + created_at: DateTimeField
+  + updated_at: DateTimeField
+}
+
+class GoogleBooksAPI <<Helper>> {
+  + {static} fetch_by_id(volume_id): dict
+  + {static} search_by_isbn(isbn): dict
+  + {static} search(query): dict
+}
+
+class OpenLibraryAPI <<Helper>> {
+  + {static} fetch_by_isbn(isbn): dict
+  + {static} search(query): dict
+}
+
+class BookViewSet <<DRF ViewSet>> {
+  + create(request): Response
+  - _create_manual(data): Book
+  - _create_from_google_books_id(volume_id): Book
+  - _create_from_isbn(isbn): Book
+}
+
+BookDirector --> BookBuilder : uses
+BookBuilder ..> Book : creates
+BookDirector ..> Book : creates
+BookViewSet --> BookBuilder : uses
+BookViewSet --> BookDirector : uses
+BookDirector --> GoogleBooksAPI : uses
+BookDirector --> OpenLibraryAPI : uses
+
+note right of BookBuilder
+  Interface fluente com
+  method chaining.
+  Valida dados progressivamente.
+end note
+
+note right of BookDirector
+  Encapsula "receitas" de construção
+  para diferentes fontes:
+  - Manual
+  - Google Books API
+  - Open Library API
+end note
+
+note bottom of Book
+  Modelo Django expandido
+  com 15 campos de metadados
+end note
+
+@enduml
