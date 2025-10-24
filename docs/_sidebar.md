@@ -10,6 +10,7 @@
         - [3.1.1.1 UC13 - Adicionar livro (Factory Method)](/PadroesDeProjeto/3.1.1.1.UC13-FactoryMethod.md)
       - [3.1.2. Builder](/PadroesDeProjeto/3.1.2.Builder.md)
       - [3.1.3. Abstract Factory](/PadroesDeProjeto/3.1.3.AbstractFactory.md)
+      - [3.1.4. Singleton](/PadroesDeProjeto/3.1.4.Singleton.md)
     - [3.2. Padrões de Projeto GoFs Estruturais](/PadroesDeProjeto/3.2.GoFsEstruturais.md)
       - [3.2.1. Decorator](/PadroesDeProjeto/3.2.1.Decorator.md)
       - [3.2.2. Facade](/PadroesDeProjeto/3.2.2.Facade.md)
