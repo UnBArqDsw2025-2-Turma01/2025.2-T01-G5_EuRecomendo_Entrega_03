@@ -18,10 +18,79 @@ A implementação feita foi do Decorator no back-end da aplicação.
 
 ### Código
 
-Foram implementados os códigos no padrão factory. Seguem abaixo:
+Foram implementados os códigos no padrão Decorator. Seguem abaixo:
 
 ```python
+class FiltroBase(ABC):
+    @abstractmethod
+    def aplicar(self, queryset):
+        pass
 
+class FiltroConcreto(FiltroBase):
+    def aplicar(self, queryset):
+        return queryset
+
+class FiltroDecorator(FiltroBase):
+    def __init__(self, filtro):
+        self._filtro = filtro
+
+class FiltroAutor(FiltroDecorator):
+    def __init__(self, filtro, autor):
+        super().__init__(filtro)
+        self.autor = autor
+
+    def aplicar(self, queryset):
+        queryset = self._filtro.aplicar(queryset)
+        return queryset.filter(author__icontains=self.autor)
+
+class FiltroCategoria(FiltroDecorator):
+    def __init__(self, filtro, categoria):
+        super().__init__(filtro)
+        self.categoria = categoria
+
+    def aplicar(self, queryset):
+        queryset = self._filtro.aplicar(queryset)
+        return queryset.filter(genre__icontains=self.categoria)
+```
+
+
+Foram implementados os códigos no padrão Template Method. Seguem abaixo:
+
+```python
+class LivroSearchTemplate(ABC):
+    def buscar(self, request):
+        filtro = self.preparar_filtros(request)
+        queryset = self.aplicar_filtros(filtro)
+        queryset = self.ordenar_resultados(request, queryset)
+        return self.exibir_resultados(queryset)
+
+    @abstractmethod
+    def preparar_filtros(self, request):
+        pass
+
+    def aplicar_filtros(self, filtro):
+        return filtro.aplicar(Livro.objects.all())
+
+    def ordenar_resultados(self, request, queryset):
+        ordenar_por = request.GET.get("ordenar_por")
+        if ordenar_por == "titulo":
+            return queryset.order_by("title")
+        return queryset
+
+    def exibir_resultados(self, queryset):
+        return queryset
+
+
+class BuscaAvancadaLivros(LivroSearchTemplate):
+    def preparar_filtros(self, request):
+        filtro = FiltroConcreto()
+        autor = request.GET.get("autor")
+        if autor:
+            filtro = FiltroAutor(filtro, autor)
+        categoria = request.GET.get("categoria")
+        if categoria:
+            filtro = FiltroCategoria(filtro, categoria)
+        return filtro
 
 ```
 
@@ -71,3 +140,4 @@ python3 manage.py runserver
 | Versão | Data       | Descrição                                                                    | Autor(es)                                                                                        | Revisor(es)                                   | Detalhes da Revisão |
 | ------ | ---------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------- | ------------------- |
 | 0.1    | 23/10/2025 | Criação inicial do documento                     | [Sophia Silva](https://github.com/sophiassilva) |[Renan Vieira](https://github.com/R-enanVieira) |                     |
+| 0.2    | 23/10/2025 | Adição dos Códigos | [Renan Vieira](https://github.com/R-enanVieira) | [Sophia Silva](https://github.com/sophiassilva) |                     |
