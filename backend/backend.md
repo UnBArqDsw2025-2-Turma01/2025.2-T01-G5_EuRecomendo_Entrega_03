@@ -29,3 +29,4 @@ Exemplos de endpoints da API:
 - /api/books/
 - /api/reviews/
 - /api/recommender/recommend/
+- /api/library/
