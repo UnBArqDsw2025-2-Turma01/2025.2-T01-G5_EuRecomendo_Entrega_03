@@ -107,7 +107,7 @@ git checkout feat-estrutural-decorator-sophia-renan
 ```
 2. No terminal, digite o seguinte comando para acessar a pasta 
 ``` 
-cd gof-factory/factory 
+cd gof-decorator-template/decorator 
 ```
 3. Rode as migrações com 
 ```python
