@@ -7,6 +7,7 @@
   - [3. Desenho de Software (Padrões de Projeto)](/PadroesDeProjeto/3.PadroesDeProjeto.md)
     - [3.1. Padrões de Projeto GoFs Criacionais](/PadroesDeProjeto/3.1.GoFsCriacionais.md)
       - [3.1.1. Factory Method](/PadroesDeProjeto/3.1.1.FactoryMethod.md)
+        - [3.1.1.1 UC13 - Adicionar livro (Factory Method)](/PadroesDeProjeto/3.1.1.1.UC13-FactoryMethod.md)
       - [3.1.2. Builder](/PadroesDeProjeto/3.1.2.Builder.md)
       - [3.1.3. Abstract Factory](/PadroesDeProjeto/3.1.3.AbstractFactory.md)
     - [3.2. Padrões de Projeto GoFs Estruturais](/PadroesDeProjeto/3.2.GoFsEstruturais.md)
@@ -22,4 +23,4 @@
       - [3.3.5. Iterator](/PadroesDeProjeto/3.3.4.Iterator.md)
     - [3.4. Participações - Padrões de Projeto](/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
     - [3.5. Iniciativas Extras - Padrões de Projeto](/PadroesDeProjeto/3.5.IniciativasExtras.md)
-      
+
