@@ -2,7 +2,6 @@
 
 - [Home](/docs)
 - [Projetos](/docs/Projeto/Projeto.md)
-  - [UC13 — Adicionar livro (Factory, Facade, Observer)](/docs/Projeto/UC13.md)
 
 - **Padrões de Projeto**
   - [3. Desenho de Software (Padrões de Projeto)](/PadroesDeProjeto/3.PadroesDeProjeto.md)
