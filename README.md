@@ -3,7 +3,7 @@
 
 ## Filtro de buscas
 
-A implementação feita foi do Decorator no back-end da aplicação.
+A implementação feita foi do Decorator e template method no back-end da aplicação.
 
 <font size="2"><p style="text-align: center"><b>Figura 1:</b> Diagrama Decorator</div>
 
