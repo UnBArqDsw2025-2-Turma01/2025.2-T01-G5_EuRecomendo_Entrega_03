@@ -16,6 +16,7 @@
       - [3.2.2. Facade](/PadroesDeProjeto/3.2.2.Facade.md)
       - [3.2.3. Proxy](/PadroesDeProjeto/3.2.3.Proxy.md)
       - [3.2.4. Adapter](/PadroesDeProjeto/3.2.3.Adapter.md)
+      - [3.2.5. Composite](/PadroesDeProjeto/3.2.5.Composite.md)
     - [3.3. Padrões de Projeto GoFs Comportamentais](/PadroesDeProjeto/3.3.GoFsComportamentais.md)
       - [3.3.1. Observer](/PadroesDeProjeto/3.3.1.Observer.md)
       - [3.3.2. Strategy](/PadroesDeProjeto/3.3.2.Strategy.md)
