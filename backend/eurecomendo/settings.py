@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'books',
     'reviews',
     'recommender',
+    'library',
     'celery_app',
 ]
 

@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/', include('books.urls')),
     path('api/', include('reviews.urls')),
     path('api/', include('recommender.urls')),
+    path('api/', include('library.urls')),
 ]
