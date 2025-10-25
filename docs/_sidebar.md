@@ -24,6 +24,7 @@
       - [3.3.3. Template Method](/PadroesDeProjeto/3.3.3.Template.md)
       - [3.3.4. Chain Of Responsibility](/PadroesDeProjeto/3.3.4.ChainOfResponsibility.md)
       - [3.3.5. Iterator](/PadroesDeProjeto/3.3.4.Iterator.md)
+      - [3.3.6. Command](/PadroesDeProjeto/3.3.6.Command.md)
     - [3.4. Participações - Padrões de Projeto](/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
     - [3.5. Iniciativas Extras - Padrões de Projeto](/PadroesDeProjeto/3.5.IniciativasExtras.md)
 
